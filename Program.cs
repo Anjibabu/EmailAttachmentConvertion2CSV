@@ -97,7 +97,7 @@ namespace EmailAttachments
                 int cnt = mis.Count; ;
 
                 log.InfoFormat("email Count :{0} ", mis.Count);
-                DeleteAllFiles();
+                //DeleteAllFiles();
                 foreach (MailItem item in mis)
                 {
                     if (item.Attachments.Count > 0)
@@ -138,28 +138,34 @@ namespace EmailAttachments
         {
             excel.Application xlApp = new excel.Application();
             excel.Workbook xlWorkBook = xlApp.Workbooks.Open(sourcePath);
-            xlApp.Visible = true;
+            xlApp.Visible = false;
             foreach (excel.Worksheet sht in xlWorkBook.Worksheets)
             {
                 sht.Select();
-                xlWorkBook.SaveAs(string.Format("{0}.csv", Path.Combine(BasePath, sht.Name)), excel.XlFileFormat.xlCSV, excel.XlSaveAsAccessMode.xlNoChange);
+                string csvFilePath = string.Format("{0}.csv", Path.Combine(BasePath, sht.Name));
+                if (File.Exists(csvFilePath))
+                {
+                    File.Delete(csvFilePath);
+                }
+                xlWorkBook.SaveAs(csvFilePath, excel.XlFileFormat.xlCSV, excel.XlSaveAsAccessMode.xlNoChange);
 
             }
             xlWorkBook.Close(false);
+            xlApp.Quit();
         }
         public static void SaveFile(Attachment attach)
         {
             var fileName = BasePath + attach.FileName;
             string fileExtension = Path.GetExtension(fileName);
             string filenameWithNameWithExtension = Path.GetFileName(fileName);
-            string csvFilePath = Path.Combine(BasePath, filenameWithNameWithExtension);
+            string xlxFilePath = Path.Combine(BasePath, filenameWithNameWithExtension);
             if (fileExtension == ".xls" || fileExtension == ".xlsx")
             {
-                attach.SaveAsFile(csvFilePath);
-                SaveAsCSV(csvFilePath);
-                if (File.Exists(csvFilePath))
+                attach.SaveAsFile(xlxFilePath);
+                SaveAsCSV(xlxFilePath);
+                if (File.Exists(xlxFilePath))
                 {
-                    File.Delete(csvFilePath);
+                    File.Delete(xlxFilePath);
                 }
             }
             else
