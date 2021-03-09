@@ -142,7 +142,7 @@ namespace EmailAttachments
             foreach (excel.Worksheet sht in xlWorkBook.Worksheets)
             {
                 sht.Select();
-                xlWorkBook.SaveAs(string.Format("{0}.csv",Path.Combine( BasePath, sht.Name)), excel.XlFileFormat.xlCSV, excel.XlSaveAsAccessMode.xlNoChange);
+                xlWorkBook.SaveAs(string.Format("{0}.csv", Path.Combine(BasePath, sht.Name)), excel.XlFileFormat.xlCSV, excel.XlSaveAsAccessMode.xlNoChange);
 
             }
             xlWorkBook.Close(false);
@@ -155,11 +155,8 @@ namespace EmailAttachments
             string csvFilePath = Path.Combine(BasePath, filenameWithNameWithExtension);
             if (fileExtension == ".xls" || fileExtension == ".xlsx")
             {
-                if (File.Exists(csvFilePath))
-                {
-                    File.Delete(csvFilePath);
-                }
                 attach.SaveAsFile(csvFilePath);
+                SaveAsCSV(csvFilePath);
                 if (File.Exists(csvFilePath))
                 {
                     File.Delete(csvFilePath);
